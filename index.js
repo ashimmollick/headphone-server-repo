@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 const port = process.env.PORT || 5000;
 
@@ -22,6 +22,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try {
         const catogoryOptionCollection = client.db('headphone').collection('catagory');
+        const catogoryProductsCollection = client.db('headphone').collection('catagoriesLIst');
 
 
 
@@ -31,6 +32,17 @@ async function run() {
             const options = await catogoryOptionCollection.find(query).toArray();
             res.send(options);
         });
+        app.get('/catagoryss/:id', async (req, res) => {
+
+            const id = req.params.id;
+            const query = {
+                catagory_id: id
+            };
+            const options = await catogoryProductsCollection.find(query).toArray()
+            res.send(options);
+        });
+
+
 
 
 
