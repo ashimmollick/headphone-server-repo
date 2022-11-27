@@ -41,6 +41,13 @@ async function run() {
             const options = await catogoryProductsCollection.find(query).toArray()
             res.send(options);
         });
+        app.get('/order/:id', async (req, res) => {
+
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const options = await catogoryProductsCollection.findOne(query)
+            res.send(options);
+        });
 
 
 
