@@ -23,6 +23,7 @@ async function run() {
     try {
         const catogoryOptionCollection = client.db('headphone').collection('catagory');
         const catogoryProductsCollection = client.db('headphone').collection('catagoriesLIst');
+        const orderBookingCollection = client.db('headphone').collection('orders');
 
 
 
@@ -48,6 +49,12 @@ async function run() {
             const options = await catogoryProductsCollection.findOne(query)
             res.send(options);
         });
+        app.put('/orders', async (req, res) => {
+            const order = req.body;
+            const result = await orderBookingCollection.insertOne(order)
+            res.send(result)
+
+        })
 
 
 
