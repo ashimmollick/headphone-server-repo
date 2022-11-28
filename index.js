@@ -49,6 +49,12 @@ async function run() {
             const options = await catogoryProductsCollection.findOne(query)
             res.send(options);
         });
+        app.get('/orders', async (req, res) => {
+            const email = req.query.email;
+            const { query } = { email: email }
+            const orders = await orderBookingCollection.find(query).toArray()
+            res.send(orders)
+        })
         app.put('/orders', async (req, res) => {
             const order = req.body;
             const result = await orderBookingCollection.insertOne(order)
