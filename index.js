@@ -2,13 +2,15 @@ const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5000
 
-const app = express();
+
 
 // middleware
-app.use(cors());
-app.use(express.json());
+const app = express()
+
+app.use(cors())
+app.use(express.json())
 
 
 
@@ -24,6 +26,7 @@ async function run() {
         const catogoryOptionCollection = client.db('headphone').collection('catagory');
         const catogoryProductsCollection = client.db('headphone').collection('catagoriesLIst');
         const orderBookingCollection = client.db('headphone').collection('orders');
+        const usersCollection = client.db('headphone').collection('users');
 
 
 
@@ -54,14 +57,19 @@ async function run() {
             const { query } = { email: email }
             const orders = await orderBookingCollection.find(query).toArray()
             res.send(orders)
-        })
+        });
         app.put('/orders', async (req, res) => {
             const order = req.body;
             const result = await orderBookingCollection.insertOne(order)
             res.send(result)
 
-        })
+        });
+        app.post('/users', async (req, res) => {
+            const user = req.body;
 
+            const result = await usersCollection.insertOne(user)
+            res.send(result)
+        })
 
 
 
