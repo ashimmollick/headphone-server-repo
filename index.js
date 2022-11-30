@@ -44,7 +44,16 @@ async function run() {
         const usersCollection = client.db('headphone').collection('users');
 
 
+        const verifyAdmin = async (req, res, next) => {
+            const decodedEmail = req.decoded.email;
+            const query = { email: decodedEmail };
+            const user = await usersCollection.findOne(query);
 
+            if (user?.role !== 'admin') {
+                return res.status(403).send({ message: 'forbidden access' })
+            }
+            next();
+        }
         app.get('/catagory', async (req, res) => {
 
             const query = {};
@@ -67,7 +76,7 @@ async function run() {
             const options = await catogoryProductsCollection.findOne(query)
             res.send(options);
         });
-        app.get('/orders', verifyJwt, async (req, res) => {
+        app.get('/orders', async (req, res) => {
             const email = req.query.email;
             const { query } = { email: email }
             const orders = await orderBookingCollection.find(query).toArray()
@@ -89,7 +98,20 @@ async function run() {
             }
 
             res.status(403).send({ accesToken: '' })
+        });
+        app.get('/users/admin/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email }
+            const user = await usersCollection.findOne(query)
+            res.send({ isAdmin: user?.role === 'admin' });
         })
+        app.get('/users/seller/:email', async (req, res) => {
+            const email = req.params.email;
+            const query = { email }
+            const user = await usersCollection.findOne(query)
+            res.send({ isSeller: user?.role === 'Seller' });
+        })
+
         app.post('/users', async (req, res) => {
             const user = req.body;
             const result = await usersCollection.insertOne(user)
@@ -99,6 +121,18 @@ async function run() {
             const query = {}
             const users = await usersCollection.find(query).toArray();
             res.send(users)
+        });
+        app.delete('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await usersCollection.deleteOne(filter);
+            res.send(result);
+        })
+        app.delete('/sellers/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const user = await usersCollection.deleteOne(filter);
+            res.send({ isSeller: user?.role === 'admin' });
         })
 
 
