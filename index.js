@@ -133,7 +133,13 @@ async function run() {
             const filter = { _id: ObjectId(id) };
             const user = await usersCollection.deleteOne(filter);
             res.send({ isSeller: user?.role === 'admin' });
-        })
+        });
+        app.delete('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const orders = await orderBookingCollection.deleteOne(filter);
+            res.send(orders)
+        });
 
 
 
