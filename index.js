@@ -109,7 +109,7 @@ async function run() {
             const email = req.params.email;
             const query = { email }
             const user = await usersCollection.findOne(query)
-            res.send({ isSeller: user?.role === 'Seller' });
+            res.send({ isSeller: user?.role === 'Buyer' });
         })
 
         app.post('/users', async (req, res) => {
